@@ -1,0 +1,23 @@
+version: '3'
+services:
+
+  db-GP:
+    image: postgres:latest
+    container_name: postgres-GP
+    restart: always
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=postgres
+    volumes:
+      - db_posgtres_GP:/var/lib/postgresql/data
+    networks:
+      - net-GP
+
+volumes:
+  db_posgtres_GP:
+
+networks:
+  net-GP:
