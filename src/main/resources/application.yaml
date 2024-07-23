@@ -1,6 +1,19 @@
 server:
   port: 8088
+
+keycloak:
+  auth-server-url: http://localhost:8082
+  realm: timestamp-realm
+  resource: timestamp-client
+  credentials:
+    secret: jo4V8zDiNCvf6Tad5Ckyv2qp0Drm1MDs
+  use-resource-role-mappings: true
+  bearer-only: true
+  ssl-required: NONE
+
 spring:
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres

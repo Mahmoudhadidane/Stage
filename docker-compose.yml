@@ -28,14 +28,30 @@ services:
     image: mongo:latest
     ports:
       - "27017:27017"
-
-  app:
-    build:
-      context: ./
-      dockerfile: dockerfile
+  keycloak:
+    image: quay.io/keycloak/keycloak:20.0.0
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres # Use service name defined in this file
+      KC_DB_URL_DATABASE: postgres # Example value for Keycloak database name
+      KC_DB_USERNAME: postgres # Example value for Keycloak database user
+      KC_DB_SCHEMA: public
+      KC_DB_PASSWORD:
+      KEYCLOAK_ADMIN: admin # Example value for Keycloak admin username
+      KEYCLOAK_ADMIN_PASSWORD: admin # Example value for Keycloak admin password
+    command:
+      - "start-dev --http-port=8082"
     ports:
-      - "8080:8080"
+      - 8082:8082
     depends_on:
-      - kafka
       - postgres
-      - mongo
+#  app:
+#    build:
+#      context: ./
+#      dockerfile: dockerfile
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - kafka
+#      - postgres
+#      - mongo

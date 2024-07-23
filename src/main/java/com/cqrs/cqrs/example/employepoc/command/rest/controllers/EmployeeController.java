@@ -21,15 +21,7 @@ public class EmployeeController {
 
     private final CommandDispatcher commandDispatcher;
 
-    /*   @PostMapping
-       public Employee saveEmployee(@RequestBody Employee employee) {
-           // Save the Employee object to the database first
-           Employee savedEmployee = employeeService.saveEmployee(employee);
-           // Then create the EmployeeEvents object and send it to the Kafka topic
-           EmployeeEvents employeeEvents = new EmployeeEvents("EmployeeCreated", savedEmployee);
-           kafkaTemplate.send("employee-events", employeeEvents);
-           return savedEmployee;
-       }*/
+
     @PostMapping
     public ResponseEntity<EmployeeResponse> saveEmployee(@RequestBody Employee employee) {
         CreateEmployeeCommand createEmployeeCommand = new CreateEmployeeCommand();
@@ -58,20 +50,5 @@ public class EmployeeController {
         deletedEmployeeCommand.getEmployee().setDeleted(true);
         commandDispatcher.send(deletedEmployeeCommand);
         return ResponseEntity.ok(new EmployeeResponse("Employee deleted", deletedEmployeeCommand.getEmployee()));}
-    /*@PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
-       Employee updatedEmployee = employeeService.updateEmployee(id, employee);
-         EmployeeEvents employeeEvents = new EmployeeEvents("EmployeeUpdated", updatedEmployee);
-            kafkaTemplate.send("employee-events", employeeEvents);
-            return updatedEmployee;
-    }
-    @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable Long id) {
 
-        employeeService.deleteEmployee(id);
-        Employee employee = new Employee();
-        employee.setId(Long.valueOf(String.valueOf(id)));
-        EmployeeEvents employeeEvents = new EmployeeEvents("EmployeeDeleted", employee);
-        kafkaTemplate.send("employee-events", employeeEvents);
-    }*/
 }
