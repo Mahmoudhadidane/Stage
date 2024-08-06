@@ -1,10 +1,13 @@
-package com.cqrs.cqrs.example.employepoc.command.rest.dto;
-import com.cqrs.cqrs.example.employepoc.command.rest.dto.CommType ;
+package com.cqrs.cqrs.example.employepoc.query.rest.dto;
+
+
+import com.cqrs.cqrs.example.employepoc.command.rest.dto.CommType;
 import com.cqrs.cqrs.example.employepoc.command.rest.dto.Direction;
 import com.cqrs.cqrs.example.employepoc.command.rest.dto.SupportedDevice;
 import com.hydatis.cqrsref.domain.BaseEntity;
 
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,9 +20,8 @@ import java.util.Map;
 @Getter
 @Setter
 @AllArgsConstructor
-@Table(name = "hardware")
+@Document(collection = "hardware")
 @Builder
-@Entity
 public class Hardware extends BaseEntity implements Serializable {
     @Id
     private String id;

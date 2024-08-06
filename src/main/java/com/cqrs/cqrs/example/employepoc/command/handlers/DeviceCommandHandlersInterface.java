@@ -1,9 +1,9 @@
-package com.cqrs.cqrs.example.employepoc.command.handlers;
-
-import com.cqrs.cqrs.example.employepoc.command.commands.*;
-
-public interface DeviceCommandHandlersInterface {
-    void handle(CreateDeviceCommand createDeviceCommand);
-    void handle(UpdateDeviceCommand updateDeviceCommand);
-    void handle(DeleteDeviceCommand deleteDeviceCommand);
-}
+//package com.cqrs.cqrs.example.employepoc.command.handlers;
+//
+//import com.cqrs.cqrs.example.employepoc.command.commands.*;
+//
+//public interface HardwareCommandHandlersInterface {
+//    void handle(CreateDeviceCommand createHardwareCommand);
+//    void handle(UpdateDeviceCommand updateHardwareCommand);
+//    void handle(DeleteDeviceCommand deleteHardwareCommand);
+//}

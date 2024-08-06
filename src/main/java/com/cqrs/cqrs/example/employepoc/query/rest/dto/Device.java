@@ -13,7 +13,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Document(collection = "device")
 @Builder
-
 public class Device extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

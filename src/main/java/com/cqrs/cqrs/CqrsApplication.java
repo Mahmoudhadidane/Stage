@@ -25,19 +25,19 @@ public class CqrsApplication {
 
     private final EmployeeQueryHandler employeeQueryHandler;
     private final EmployeeCommandHandlers employeeCommandHandlers;
-    private final DeviceQueryHandler deviceQueryHandler;
-    private final DeviceCommandHandlers deviceCommandHandlers;
+    private final HardwareQueryHandler hardwareQueryHandler;
+    private final HardwareCommandHandlers hardwareCommandHandlers;
     private final CommandDispatcher commandDispatcher;
     private final QueryDispatcher queryDispatcher;
 
     @Autowired
     public CqrsApplication(EmployeeQueryHandler employeeQueryHandler, EmployeeCommandHandlers employeeCommandHandlers,
-                           DeviceQueryHandler deviceQueryHandler, DeviceCommandHandlers deviceCommandHandlers,
+                           HardwareQueryHandler hardwareQueryHandler, HardwareCommandHandlers hardwareCommandHandlers,
                            CommandDispatcher commandDispatcher, QueryDispatcher queryDispatcher) {
         this.employeeQueryHandler = employeeQueryHandler;
         this.employeeCommandHandlers = employeeCommandHandlers;
-        this.deviceQueryHandler = deviceQueryHandler;
-        this.deviceCommandHandlers = deviceCommandHandlers;
+        this.hardwareQueryHandler = hardwareQueryHandler;
+        this.hardwareCommandHandlers = hardwareCommandHandlers;
         this.commandDispatcher = commandDispatcher;
         this.queryDispatcher = queryDispatcher;
     }
@@ -47,14 +47,16 @@ public class CqrsApplication {
         commandDispatcher.registerHandler(CreateEmployeeCommand.class, employeeCommandHandlers::handle);
         commandDispatcher.registerHandler(UpdateEmployeeCommand.class, employeeCommandHandlers::handle);
         commandDispatcher.registerHandler(DeleteEmployeeCommand.class, employeeCommandHandlers::handle);
-        commandDispatcher.registerHandler(CreateDeviceCommand.class, deviceCommandHandlers::handle);
-        commandDispatcher.registerHandler(UpdateDeviceCommand.class, deviceCommandHandlers::handle);
-        commandDispatcher.registerHandler(DeleteDeviceCommand.class, deviceCommandHandlers::handle);
+
+        commandDispatcher.registerHandler(CreateHardwareCommand.class, hardwareCommandHandlers::handle);
+        commandDispatcher.registerHandler(UpdateHardwareCommand.class, hardwareCommandHandlers::handle);
+        commandDispatcher.registerHandler(DeleteHardwareCommand.class, hardwareCommandHandlers::handle);
 
         queryDispatcher.registerHandler(FindAllEmployeesQuery.class, employeeQueryHandler::handle);
         queryDispatcher.registerHandler(FindEmployeeByIdQuery.class, employeeQueryHandler::handle);
-        queryDispatcher.registerHandler(FindAllDevicesQuery.class, deviceQueryHandler::handle);
-        queryDispatcher.registerHandler(FindDevicesByIdQuery.class, deviceQueryHandler::handle);
+
+        queryDispatcher.registerHandler(FindAllHardwareQuery.class, hardwareQueryHandler::handle);
+        queryDispatcher.registerHandler(FindHardwareByIdQuery.class, hardwareQueryHandler::handle);
     }
 
     public static void main(String[] args) {
