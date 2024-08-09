@@ -2,14 +2,9 @@ package com.cqrs.cqrs.zkteco4j.terminal;
 
 import com.cqrs.cqrs.zkteco4j.Packet.*;
 import com.cqrs.cqrs.zkteco4j.commands.*;
-import com.cqrs.cqrs.zkteco4j.utils.HexUtils;
 import com.cqrs.cqrs.zkteco4j.utils.SecurityUtils;
 import com.cqrs.cqrs.zkteco4j.cnn.Connector;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -120,7 +115,7 @@ public class ZKTerminal {
         }
     }
 
-    public void getDeviceSerialNumber() throws IOException {
+    public String getDeviceSerialNumber() throws IOException {
         if (establishFullConnection(0)) {
             GetDeviceSerialNumber getDeviceSerialNumberPacket = new GetDeviceSerialNumber((short) sessionId, (short) replyNo);
             byte[] toSend = getDeviceSerialNumberPacket.getRawPacket(false);
@@ -146,6 +141,7 @@ public class ZKTerminal {
         } else {
             System.out.println("Error establishing connection.");
         }
+        return null;
     }
 
     public void getReadSizes() throws IOException {

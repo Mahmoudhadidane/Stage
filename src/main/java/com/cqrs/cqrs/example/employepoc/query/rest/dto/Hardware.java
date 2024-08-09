@@ -7,6 +7,8 @@ import com.cqrs.cqrs.example.employepoc.command.rest.dto.SupportedDevice;
 import com.hydatis.cqrsref.domain.BaseEntity;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
@@ -23,7 +25,7 @@ import java.util.Map;
 @Document(collection = "hardware")
 @Builder
 public class Hardware extends BaseEntity implements Serializable {
-    @Id
+   @Id
     private String id;
     private static final long serialVersionUID = 1L;
 
@@ -33,7 +35,7 @@ public class Hardware extends BaseEntity implements Serializable {
 
     private CommType commType = CommType.TCP;
     private String trigger;
-    private String ipAddress;
+ private String ipAddress;
     private int portNumber;
     private LocalDateTime date;
 

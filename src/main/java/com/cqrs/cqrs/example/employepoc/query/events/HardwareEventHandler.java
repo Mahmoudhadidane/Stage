@@ -17,6 +17,7 @@ public class HardwareEventHandler implements HardwareEventHandlerInterface {
     public void on(HardwareCreatedEvent event) {
         System.out.println("Hardware created event received: " + event.toString());
         Hardware h = Hardware.builder()
+                .id(event.getHardware().getId())
                 .direction(event.getHardware().getDirection())
                 .type(event.getHardware().getType())
                 .serialNumber(event.getHardware().getSerialNumber())
@@ -33,6 +34,8 @@ public class HardwareEventHandler implements HardwareEventHandlerInterface {
     @Override
     public void on(HardwareUpdatedEvent event) {
         Hardware h = Hardware.builder()
+                .id(event.getHardware().getId())
+
                 .direction(event.getHardware().getDirection())
                 .type(event.getHardware().getType())
                 .serialNumber(event.getHardware().getSerialNumber())
@@ -49,6 +52,7 @@ public class HardwareEventHandler implements HardwareEventHandlerInterface {
     @Override
     public void on(HardwareDeletedEvent event) {
         Hardware h = Hardware.builder()
+                .id(event.getHardware().getId())
                 .direction(event.getHardware().getDirection())
                 .type(event.getHardware().getType())
                 .serialNumber(event.getHardware().getSerialNumber())
