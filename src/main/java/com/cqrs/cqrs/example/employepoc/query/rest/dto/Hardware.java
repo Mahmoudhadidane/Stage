@@ -41,8 +41,8 @@ public class Hardware extends BaseEntity implements Serializable {
 
     @ElementCollection
     @CollectionTable(name = "Hardware_map", joinColumns = @JoinColumn(name = "id"))
-    @MapKeyColumn(name = "key")
-    @Column(name = "value")
+    @MapKeyColumn(name = "_key")
+    @Column(name = "_value")
 
     private Map<String, String> otherAttributes = new HashMap<>();
 
