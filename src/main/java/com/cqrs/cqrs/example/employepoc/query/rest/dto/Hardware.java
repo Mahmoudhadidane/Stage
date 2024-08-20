@@ -35,7 +35,7 @@ public class Hardware extends BaseEntity implements Serializable {
 
     private CommType commType = CommType.TCP;
     private String trigger;
- private String ipAddress;
+    private String ipAddress;
     private int portNumber;
     private LocalDateTime date;
 

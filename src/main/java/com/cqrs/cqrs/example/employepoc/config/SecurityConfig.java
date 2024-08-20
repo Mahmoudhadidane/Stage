@@ -17,6 +17,7 @@ import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.web.cors.CorsConfiguration;
 
 @KeycloakConfiguration
 //@ComponentScan({"com.hydatis.cqrs.command.infrastructure.exceptions"})
@@ -51,13 +52,21 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
-        http.csrf().disable().cors().disable()
+        http.cors().configurationSource(
+                        request -> {
+                            CorsConfiguration corsConfig = new CorsConfiguration();
+                            corsConfig.applyPermitDefaultValues();
+                            corsConfig.addAllowedOrigin("*");
+                            corsConfig.addAllowedMethod("*");
+                            return corsConfig;
+                        })
+                .and()
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/employees/**").hasRole("user")
+                .antMatchers("/api/**").permitAll()
                 .antMatchers("/ws-endpoint/**").permitAll()
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .anyRequest()
-                .authenticated();
+                        .anyRequest().permitAll();
 
         http.exceptionHandling()
                 .accessDeniedHandler(restAccessDeniedHandler)

@@ -1,23 +1,22 @@
 package com.cqrs.cqrs.zkteco4j.terminal;
 
+import com.cqrs.cqrs.example.employepoc.query.rest.response.InfoResponse;
 import com.cqrs.cqrs.zkteco4j.Packet.*;
 import com.cqrs.cqrs.zkteco4j.commands.*;
 import com.cqrs.cqrs.zkteco4j.utils.SecurityUtils;
 import com.cqrs.cqrs.zkteco4j.cnn.Connector;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-
-
-import static java.util.Arrays.*;
+import static java.util.Arrays.copyOfRange;
 
 public class ZKTerminal {
     private final Connector connector;
     private int sessionId;
-    private short replyId;
     private short replyNo;
 
     public ZKTerminal(String hostname, int port, Connector.ConnectorType type) {
@@ -49,7 +48,7 @@ public class ZKTerminal {
     }
 
     public ZKCommandReply connectAuth(int comKey) throws IOException {
-        byte[] key = SecurityUtils.authKey(comKey, sessionId, 50);//supp50
+        byte[] key = SecurityUtils.authKey(comKey, sessionId, 50);
         byte[] toSend = new ConnectAuthPacket(sessionId, replyNo, key).getRawPacket(false);
 
         connector.send(toSend);
@@ -70,7 +69,6 @@ public class ZKTerminal {
         return new ZKCommandReply(replyCode, sessionId, replyId, payloads);
     }
 
-
     public boolean establishFullConnection(int comKey) {
         if (connector.connect()) {
             try {
@@ -85,7 +83,7 @@ public class ZKTerminal {
         return false;
     }
 
-    public void getTime() throws IOException {
+    public String getTime() throws IOException {
         if (establishFullConnection(0)) {
             GetTime getTimePacket = new GetTime((short) sessionId, (short) replyNo);
             byte[] toSend = getTimePacket.getRawPacket(false);
@@ -95,23 +93,19 @@ public class ZKTerminal {
 
             int[] response = connector.readResponse();
 
-            //System.out.println("Response received: " + Arrays.toString(response));
-
             try {
-                GetTimeReply getTimeReply = new GetTimeReply(CommandReplyCode.decode(response[8] + (response[9] * 0x100)), sessionId, replyNo, copyOfRange(response, 16, response.length));
+                GetTimeReply getTimeReply = new GetTimeReply(CommandReplyCode.decode(response[8] + (response[9] * 0x100)), sessionId, replyNo, Arrays.copyOfRange(response, 16, response.length));
                 Date deviceDate = getTimeReply.getDeviceDate();
 
                 // Format DATE
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String formattedDate = dateFormat.format(deviceDate);
-
-                System.out.println("Date and Time on Device: " + formattedDate);
+                return dateFormat.format(deviceDate);
             } catch (ParseException e) {
                 e.printStackTrace();
-                System.out.println("Failed to parse the device date.");
+                throw new RuntimeException("Failed to parse the device date.", e);
             }
         } else {
-            System.out.println("Error establishing connection.");
+            throw new RuntimeException("Error establishing connection.");
         }
     }
 
@@ -125,16 +119,12 @@ public class ZKTerminal {
 
             int[] byteResponse = connector.readResponse();
 
-
             if (byteResponse != null && byteResponse.length >= 16) {
-                //System.out.println("Hexadecimal Response: " + HexUtils.byteArrayToHex(byteResponse));
-
                 CommandReplyCode replyCode = CommandReplyCode.decode(byteResponse[8] + (byteResponse[9] * 0x100));
                 GetDeviceSerialNumberReply getDeviceSerialNumberReply = new GetDeviceSerialNumberReply(
                         replyCode, sessionId, replyNo, copyOfRange(byteResponse, 16, byteResponse.length));
-                String deviceSerialNumber = getDeviceSerialNumberReply.getDeviceSerialNumber();
 
-                System.out.println("Device Serial Number: " + deviceSerialNumber);
+                return getDeviceSerialNumberReply.getDeviceSerialNumber();
             } else {
                 System.out.println("Invalid response received.");
             }
@@ -144,7 +134,7 @@ public class ZKTerminal {
         return null;
     }
 
-    public void getReadSizes() throws IOException {
+    public InfoResponse getReadSizes() throws IOException {
         GetReadSizes command = new GetReadSizes((short) sessionId, replyNo);
         byte[] response = sendCommand(command);
 
@@ -154,19 +144,26 @@ public class ZKTerminal {
             System.out.println("Fingers: " + reply.fingers);
             System.out.println("Records: " + reply.records);
             System.out.println("Faces: " + reply.faces);
+
+            // Créer un InfoResponse avec les données récupérées
+            return InfoResponse.builder()
+                    .info(String.format("Users: %d, Fingers: %d, Records: %d, Faces: %d",
+                            reply.users, reply.fingers, reply.records, reply.faces))
+                    .message("Device information retrieved successfully")
+                    .build();
         } else {
             throw new IOException("Failed to read sizes");
         }
     }
 
+
     private byte[] sendCommand(ZKPacket command) throws IOException {
-        // Convertir la commande en bytes et l'envoyer à l'appareil
         byte[] toSend = command.getRawPacket(false);
         connector.send(toSend);
         replyNo++;
 
         int[] response = connector.readResponse();
-        // Vérifier la réponse et retourner les bytes utiles
+
         if (response != null && response.length >= 16) {
             byte[] payload = new byte[response.length - 16];
             for (int i = 0; i < payload.length; i++) {
@@ -178,8 +175,4 @@ public class ZKTerminal {
             return null;
         }
     }
-
-
 }
-
-

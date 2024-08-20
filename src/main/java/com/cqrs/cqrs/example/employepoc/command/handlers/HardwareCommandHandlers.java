@@ -30,6 +30,11 @@ public class HardwareCommandHandlers implements HardwareCommandHandlersInterface
 
     @Override
     public void handle(CreateHardwareCommand createHardwareCommand) {
+        if (createHardwareCommand.getHardware().getIpAddress().trim().isEmpty()){
+            throw new RuntimeException("invalid ip adress");
+
+        }
+
         Hardware newHardware = new Hardware();
         newHardware.setId(UUID.randomUUID().toString());
         newHardware.setDirection(createHardwareCommand.getHardware().getDirection());
